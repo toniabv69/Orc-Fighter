@@ -30,6 +30,7 @@ def execute_hero_move(n):
         damage = int(randrange(h.Moves[0][2], h.Moves[0][3], 1) * h.LevelAttackMult)
         if is_crit(h.CritChance):
             damage = int(damage * h.CritMult)
+            print("You landed a critical hit!")
         o.take_damage(damage)
         print("You dealt {} damage!".format(damage))
         input("Press Enter to continue...")
