@@ -17,6 +17,7 @@ Added basic text GUI.
 - v1.1:
 Added mana system.
 Added character classes:
+
 Swordsman:
 - has slightly more HP
 - has default mana.
