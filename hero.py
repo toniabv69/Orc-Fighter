@@ -3,14 +3,16 @@ from random import randrange
 
 
 class Hero(Entity):
-    def __init__(self, name, health, nickname, level, experience):
-        super().__init__(name, health, level)
+    def __init__(self, name, health, nickname, level, experience, mana, health_mult, class_id):
+        super().__init__(name, health, level, mana, health_mult)
+        self.AttackMult = 1
+        self.DefaultAttackMult = self.AttackMult
         self.Nickname = nickname
-        self.Moves = [["Attack", 1, 23, 27], ["Heal", 2, 21, 25], ["Focus", 3, 0.19, 0.21], ["Rage", 4, 0.19, 0.21]]  # [name, id, min_damage, max_damage]
+        self.ClassId = class_id
+        self.Moves = [["Attack", 1, 23, 27, 15, 0], ["Heal", 2, 21, 25, 10, 1], ["Focus", 3, 0.09, 0.11, 5, 2], [], ["Mana Restore", 5, 40, 45, 0, 3]]  # [name, id, min_stat, max_stat, mana_cost, move_type]
         self.DefaultCritChance = 0.1
         self.CritChance = self.DefaultCritChance
-        self.DefaultCritMult = 2
-        self.CritMult = self.DefaultCritMult
+        self.CritMult = 2
         self.Experience = experience
         self.NeededExp = 20
         for i in range(2, level + 1, 1):
@@ -21,14 +23,11 @@ class Hero(Entity):
 
     def level_up(self):
         self.Level += 1
-        self.MaxHealth += int((10 + self.Level - 2) / 2)
-        self.LevelAttackMult += (10 + self.Level - 2) / 100
+        self.MaxHealth = int(self.MaxHealth * 1.05)
+        self.LevelAttackMult += (8 + self.Level) / 100
         self.Experience -= self.NeededExp
         self.NeededExp += self.Level * 10
 
-    def focus(self):
-        self.CritChance += (randrange(self.Moves[2][2] * 100, self.Moves[2][3] * 100, 1)) / 100
-
-    def rage(self):
-        self.CritMult += (randrange(self.Moves[3][2] * 100, self.Moves[3][3] * 100, 1)) / 100
+    def focus(self, move_id):
+        self.CritChance += (randrange(int(self.Moves[move_id][2] * 100), int(self.Moves[move_id][3] * 100), 1)) / 100
 
