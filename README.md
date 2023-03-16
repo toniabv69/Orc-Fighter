@@ -43,4 +43,9 @@ Mage:
 - has both Ultimate Attack and Ultimate Regen, with Ultimate Attack behaving the same as Ultimate Slash.
 - only class which can't deal critical hits.
 
+- v1.2
+Added shop and gold system.
+Added item system, where the items are unique to each class. They work kinda like the bytes from FNaF World - multiple items can be equipped at a time, even when they are of the same type. They will also not be purchaseable and will be permanently equipped (this will most likely be changed in a future update).
+
+
 This file will be updated in the future if I decide to make any more updates.
