@@ -10,8 +10,4 @@ class Tank(Hero):
         self._Moves[3] = ["Ultimate Rage", 4, 0.12, 0.14, 25, 4]
 
     def rage(self, id):
-        extra = 0
-        for item in self.get_items():
-            if item.get_amplifier_type() == 2:
-                extra += item.get_amplifier()
-        self._AttackMult += ((randrange(int(self._Moves[id][2] * 100), int(self._Moves[id][3] * 100), 1)) / 100) + extra
+        self._AttackMult += ((randrange(int(self._Moves[id][2] * 100), int(self._Moves[id][3] * 100), 1)) / 100)

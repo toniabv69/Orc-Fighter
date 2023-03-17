@@ -26,6 +26,7 @@ class Hero(Entity):
                                 Item("Mythic", "Sword", 1, 0, 4, 2000),
                                 Item("Godly", "Sword", 1.5, 0, 5, 4000),
                                 Item("Focus", "Sash", 0.1, 4, 6, 500)]
+            self._ClassItemTypes = ["Sword", "Sash"]
         elif self._ClassId == 2:
             self._ClassItems = [Item("Basic", "Healer Orb", 0.05, 1, 0, 50),
                                 Item("Great", "Healer Orb", 0.1, 1, 1, 200),
@@ -33,25 +34,30 @@ class Hero(Entity):
                                 Item("Legendary", "Healer Orb", 0.6, 1, 3, 1200),
                                 Item("Mythic", "Healer Orb", 1, 1, 4, 2000),
                                 Item("Godly", "Healer Orb", 1.5, 1, 5, 4000)]
+            self._ClassItemTypes = ["Healer Orb"]
         elif self._ClassId == 3:
-            self._ClassItems = [Item("Basic", "Rage Orb", 0.05, 2, 0, 50),
-                                Item("Great", "Rage Orb", 0.1, 2, 1, 200),
-                                Item("Epic", "Rage Orb", 0.3, 2, 2, 600),
-                                Item("Legendary", "Rage Orb", 0.6, 2, 3, 1200),
-                                Item("Mythic", "Rage Orb", 1, 2, 4, 2000),
-                                Item("Godly", "Rage Orb", 1.5, 2, 5, 4000)]
+            self._ClassItems = [Item("Basic", "Armor", 0.05, 2, 0, 50),
+                                Item("Great", "Armor", 0.1, 2, 1, 200),
+                                Item("Epic", "Armor", 0.2, 2, 2, 600),
+                                Item("Legendary", "Armor", 0.3, 2, 3, 1200),
+                                Item("Mythic", "Armor", 0.5, 2, 4, 2000),
+                                Item("Godly", "Armor", 0.7, 2, 5, 4000)]
+            self._ClassItemTypes = ["Armor"]
         elif self._ClassId == 4:
             self._ClassItems = [Item("Basic", "Mana Restore Orb", 0.05, 3, 0, 50),
                                 Item("Great", "Mana Restore Orb", 0.1, 3, 1, 200),
                                 Item("Epic", "Mana Restore Orb", 0.3, 3, 2, 600),
                                 Item("Legendary", "Mana Restore Orb", 0.6, 3, 3, 1200),
                                 Item("Mythic", "Mana Restore Orb", 1, 3, 4, 2000),
-                                Item("Godly", "Mana Restore Orb", 1.5, 3, 5, 4000)]
+                                Item("Godly", "Mana Restore Orb", 1.5, 3, 5, 4000),
+                                Item("A-10", "Thunderbolt", 10, 0, 6, 99999)]
+            self._ClassItemTypes = ["Mana Restore Orb", "Thunderbolt"]
         self._Items = []
+        self._EquippedItems = []
         for item in items:
             if 0 < item < len(self._ClassItems):
                 self.add_item(self._ClassItems[item])
-
+                self.equip_item(item)
         for i in range(2, level + 1, 1):
             self._NeededExp += (i * 10)
 
@@ -68,8 +74,33 @@ class Hero(Entity):
     def add_item(self, item: Item):
         self._Items.append(item)
 
-    def remove_item(self, index):
-        self._Items.pop(index)
+    def remove_item(self, item: Item):
+        if item in self._Items:
+            self._Items.remove(item)
+
+    def get_equipped_items(self):
+        return self._EquippedItems
+
+    def get_class_item_types(self):
+        return self._ClassItemTypes
+
+    def equip_item(self, item_id):
+        if self.is_type_equipped(self._ClassItems[item_id].get_type()):
+            for item in self._EquippedItems:
+                if item.get_type() == self._ClassItems[item_id].get_type():
+                    self._EquippedItems.remove(item)
+        self._EquippedItems.append(self._ClassItems[item_id])
+
+    def unequip_item(self, item_id):
+        for item in self._EquippedItems:
+            if item.get_type() == self._ClassItems[item_id].get_type():
+                self._EquippedItems.remove(item)
+
+    def is_type_equipped(self, type):
+        for item in self.get_equipped_items():
+            if type == item.get_type():
+                return True
+        return False
 
     def get_class_items(self):
         return self._ClassItems
@@ -90,7 +121,7 @@ class Hero(Entity):
 
     def focus(self, move_id):
         extra = 0
-        for item in self.get_items():
+        for item in self.get_equipped_items():
             if item.get_amplifier_type() == 4:
                 extra += item.get_amplifier()
         self._CritChance += ((randrange(int(self._Moves[move_id][2] * 100),

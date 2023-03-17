@@ -34,7 +34,7 @@ def execute_hero_move(n, move_type):
         h.spend_mana(h.get_moves()[n][4])
         damage = int(randrange(h.get_moves()[n][2], h.get_moves()[n][3], 1) * h.get_level_attack_mult() *
                      h.get_attack_mult())
-        items = h.get_items()
+        items = h.get_equipped_items()
         for item in items:
             if item.get_amplifier_type() == 0:
                 damage = int(damage + (damage * item.get_amplifier()))
@@ -48,7 +48,7 @@ def execute_hero_move(n, move_type):
     elif move_type == 1:
         h.spend_mana(h.get_moves()[n][4])
         healing = int(randrange(h.get_moves()[n][2], h.get_moves()[n][3], 1) * h.get_level_attack_mult())
-        items = h.get_items()
+        items = h.get_equipped_items()
         for item in items:
             if item.get_amplifier_type() == 1:
                 healing = int(healing + (healing * item.get_amplifier()))
@@ -66,7 +66,7 @@ def execute_hero_move(n, move_type):
         return True
     elif move_type == 3:
         mana = int(randrange(h.get_moves()[n][2], h.get_moves()[n][3], 1))
-        items = h.get_items()
+        items = h.get_equipped_items()
         for item in items:
             if item.get_amplifier_type() == 3:
                 mana = int(mana + (mana * item.get_amplifier()))
@@ -83,9 +83,6 @@ def execute_hero_move(n, move_type):
         input("Press Enter to continue...")
         return True
     else:
-        clear()
-        print("Invalid input!")
-        input("Press Enter to continue...")
         return False
 
 
@@ -94,6 +91,10 @@ def execute_orc_move(n, move_type):
         o.spend_mana(o.get_moves()[n][4])
         damage = int(randrange(o.get_moves()[n][2], o.get_moves()[n][3], 1) *
                      o.get_level_attack_mult() * o.get_berserk_factor())
+        items = h.get_equipped_items()
+        for item in items:
+            if item.get_amplifier_type() == 2:
+                damage -= int(damage * item.get_amplifier())
         h.take_damage(damage)
         clear()
         print("You took {} damage!".format(damage))
@@ -266,9 +267,10 @@ while True:
     print("Orc Fighter\n")
     print("1. Fight")
     print("2. Shop")
-    print("3. Delete Save")
-    print("4. Save & Exit")
-    print("5. Exit Without Saving")
+    print("3. Inventory")
+    print("4. Delete Save")
+    print("5. Save & Exit")
+    print("6. Exit Without Saving")
 
     menu_choice = int(input('Please make a selection: '))
     if menu_choice == 1:
@@ -286,38 +288,120 @@ while True:
     elif menu_choice == 2:
         while True:
             clear()
-            print("Items for your class: \n")
-            counter = 0
-            shop_items = []
-            for item in h.get_class_items():
-                if item not in h.get_items():
+            print("Shop\n")
+            print("1. Buy")
+            print("2. Sell")
+            print("3. Exit")
+            main_shop_choice = int(input("Please make a selection: "))
+            if main_shop_choice == 1:
+                while True:
+                    clear()
+                    print("Items for your class: \n")
+                    counter = 0
+                    shop_items = []
+                    for item in h.get_class_items():
+                        if item not in h.get_items():
+                            counter += 1
+                            print(str(counter) + ". " + str(item) + "  Cost: " + str(item.get_cost()))
+                            shop_items.append(item)
                     counter += 1
-                    print(str(counter) + ". " + str(item) + "  Cost: " + str(item.get_cost()))
-                    shop_items.append(item)
-            counter += 1
-            print(str(counter) + ". Exit")
-            print("\nYour Gold: {}".format(h.get_gold()))
-            shop_choice = int(input("\nPlease choose an item (or exit the menu): "))
-            if shop_choice > counter or shop_choice < 1:
+                    print(str(counter) + ". Exit")
+                    print("\nYour Gold: {}".format(h.get_gold()))
+                    shop_choice = int(input("\nPlease choose an item to buy (or exit the menu): "))
+                    if shop_choice > counter or shop_choice < 1:
+                        clear()
+                        print("Invalid action!")
+                        input("Press Enter to continue...")
+                        continue
+                    elif shop_choice == counter:
+                        break
+                    elif h.get_gold() < shop_items[shop_choice - 1].get_cost():
+                        clear()
+                        print("Not enough gold!")
+                        input("Press Enter to continue...")
+                        continue
+                    else:
+                        clear()
+                        print("You spent {} gold to buy {}! It was automatically equipped!".format(shop_items[shop_choice - 1]
+                                                                                                   .get_cost(),
+                                                                                                   shop_items[shop_choice - 1]))
+                        h.spend_gold(shop_items[shop_choice - 1].get_cost())
+                        h.add_item(shop_items[shop_choice - 1])
+                        h.equip_item(shop_items[shop_choice - 1].get_id())
+                        input("Press Enter to continue...")
+            elif main_shop_choice == 2:
+                while True:
+                    clear()
+                    print("Your gold: {}\n".format(h.get_gold()))
+                    print("Your items:")
+                    counter = 0
+                    sell_items = []
+                    for item in h.get_items():
+                        counter += 1
+                        print(str(counter) + ". " + str(item) + "  Sell Price: " + str(int(item.get_cost() / 2)))
+                        sell_items.append(item)
+                    counter += 1
+                    print(str(counter) + ". Exit")
+                    sell_choice = int(input("\nPlease choose an item to sell (or exit the menu): "))
+                    if sell_choice > counter or sell_choice < 1:
+                        clear()
+                        print("Invalid action!")
+                        input("Press Enter to continue...")
+                        continue
+                    elif sell_choice == counter:
+                        break
+                    else:
+                        clear()
+                        h.unequip_item(sell_items[sell_choice - 1].get_id())
+                        h.remove_item(sell_items[sell_choice - 1])
+                        h.give_gold(int(sell_items[sell_choice - 1].get_cost() / 2))
+                        print("You have sold your {} for {} gold!".format(sell_items[sell_choice - 1],
+                                                                          int(sell_items[sell_choice - 1].get_cost() / 2)))
+                        input("Press Enter to continue...")
+            elif main_shop_choice == 3:
+                break
+            else:
                 clear()
                 print("Invalid action!")
                 input("Press Enter to continue...")
                 continue
-            elif shop_choice == counter:
-                break
-            elif h.get_gold() < h.get_class_items()[shop_choice - 1].get_cost():
+    elif menu_choice == 3:
+        while True:
+            clear()
+            print("Your gold: {}\n".format(h.get_gold()))
+            print("Your items:")
+            counter = 0
+            inv_items = []
+            for item in h.get_items():
+                counter += 1
+                if item in h.get_equipped_items():
+                    print(str(counter) + ". " + str(item) + "  Equipped")
+                else:
+                    print(str(counter) + ". " + str(item) + "  Unequipped")
+                inv_items.append(item)
+            counter += 1
+            print(str(counter) + ". Exit")
+            inv_choice = int(input("\nPlease choose an item to equip/unequip (or exit the menu): "))
+            if inv_choice > counter or inv_choice < 1:
                 clear()
-                print("Not enough gold!")
+                print("Invalid action!")
                 input("Press Enter to continue...")
                 continue
+            elif inv_choice == counter:
+                break
             else:
                 clear()
-                print("You spent {} gold to buy {}!".format(shop_items[shop_choice - 1].get_cost(),
-                                                           shop_items[shop_choice - 1]))
-                h.spend_gold(shop_items[shop_choice - 1].get_cost())
-                h.add_item(shop_items[shop_choice - 1])
-                input("Press Enter to continue...")
-    elif menu_choice == 3:
+                if not inv_items[inv_choice - 1] in h.get_equipped_items():
+                    clear()
+                    h.equip_item(inv_items[inv_choice - 1].get_id())
+                    print("You equipped {}!".format(inv_items[inv_choice - 1]))
+                    input("Press Enter to continue...")
+                else:
+                    clear()
+                    h.unequip_item(inv_items[inv_choice - 1].get_id())
+                    print("You unequipped {}!".format(inv_items[inv_choice - 1]))
+                    input("Press Enter to continue...")
+    elif menu_choice == 4:
         clear()
         if path.exists("save.txt"):
             remove("save.txt")
@@ -326,7 +410,7 @@ while True:
         else:
             print("There was no save file to delete!")
             input("Press Enter to continue...")
-    elif menu_choice == 4:
+    elif menu_choice == 5:
         with open("save.txt", "wt") as f:
             write_content = [h.get_name(), str(h.get_level()), h.get_nickname(), str(h.get_experience()),
                              str(h.get_classid()), str(h.get_gold())]
@@ -337,7 +421,9 @@ while True:
             f.close()
             clear()
             exit()
-    elif menu_choice == 5:
+            # save is in this order: name, level, nickname, experience, class_id(1 - Swordsman, 2 - Healer,
+            # 3 - Tank, 4 - Mage), gold, items(using class item ids, each one is on new line)
+    elif menu_choice == 6:
         clear()
         exit()
     else:
