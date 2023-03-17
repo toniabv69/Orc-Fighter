@@ -47,5 +47,9 @@ Mage:
 Added shop and gold system.
 Added item system, where the items are unique to each class. They work kinda like the bytes from FNaF World - multiple items can be equipped at a time, even when they are of the same type. They will also not be purchaseable and will be permanently equipped (this will most likely be changed in a future update).
 
+- v1.3:
+Added buy and sell menus to shop.
+Added weapon type checking, now only one weapon of each type can be equipped at a time (you can tell the weapon type from the second word of the name).
+Added A-10 Thunderbolt, exclusive to the mage. It gets summoned in by the mage to help with attacking, that's why it's exclusive.
 
 This file will be updated in the future if I decide to make any more updates.
