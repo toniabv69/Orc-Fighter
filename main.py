@@ -165,7 +165,6 @@ def begin_fight(o: Orc):
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 fight_run = False
-                pygame.quit()
         draw_healthbar(h.get_health(), h.get_max_health(), 20, 500, 440, 40)
         draw_healthbar(o.get_health(), o.get_max_health(), 440, 20, 440, 40)
         draw_manabar(h.get_mana(), h.get_max_mana(), 20, 550, 440, 40)
