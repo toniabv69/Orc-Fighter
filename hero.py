@@ -55,7 +55,7 @@ class Hero(Entity):
         self._Items = []
         self._EquippedItems = []
         for item in items:
-            if 0 < item < len(self._ClassItems):
+            if -1 < item < len(self._ClassItems):
                 self.add_item(self._ClassItems[item])
                 self.equip_item(item)
         for i in range(2, level + 1, 1):
@@ -66,7 +66,7 @@ class Hero(Entity):
 
     def level_up(self):
         self._Level += 1
-        self._MaxHealth = int(self._MaxHealth * 1.05)
+        self._MaxHealth += int(self._Level * 1.5 * self._HealthMult)
         self._LevelAttackMult += (8 + self._Level) / 100
         self._Experience -= self._NeededExp
         self._NeededExp += self._Level * 10

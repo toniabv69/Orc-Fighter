@@ -5,7 +5,7 @@ from healer import Healer
 from tank import Tank
 from mage import Mage
 from random import randrange, randint
-from os import system, path, name, remove, path
+from os import system, name, remove, path
 
 if path.isfile('save.txt'):
     first_time = 0
