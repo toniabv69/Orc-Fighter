@@ -7,7 +7,6 @@ from item import Item
 from healer import Healer
 from tank import Tank
 from mage import Mage
-from weapon_button import WeaponButton
 from random import randrange, randint
 from os import system, name, remove, path
 
