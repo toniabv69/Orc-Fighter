@@ -325,6 +325,7 @@ def end_fight(o: Orc):
 def begin_fight(o: Orc):
     pygame.display.set_caption("Fight")
     fight_run = True
+    small_font = pygame.font.SysFont('cambodia', 20)
     font = pygame.font.SysFont('cambodia', int(40 / 1.2))
     title_font = pygame.font.SysFont('cambodia', 70)
     character = pygame.image.load('char.png')
@@ -337,25 +338,25 @@ def begin_fight(o: Orc):
     pygame.mixer.music.play(loops=1000)
     char = pygame.image.load('char.png')
     orc_level_render = font.render(orc_level_text, True, BLACK)
-    hero_level_render = font.render(hero_level_text, True, BLACK)
+    hero_level_render = (font if len(hero_level_text) < 18 else small_font).render(hero_level_text, True, BLACK)
     for i, move in enumerate(h.get_moves()):
         move_text_surfaces.append(font.render(move[0] + "   MP Cost: {}".format(move[4]), True, BLACK))
         move_buttons.append(pygame.Rect(530, 380 + i * 42,
                                         move_text_surfaces[i].get_width(), move_text_surfaces[i].get_height()))
     reset_frame()
     while fight_run:
-        hero_hp_text = "HP: {}".format(h.get_health())
-        orc_hp_text = "HP: {}".format(o.get_health())
-        hero_mp_text = "MP: {}".format(h.get_mana())
-        orc_mp_text = "MP: {}".format(o.get_mana())
-        hero_hp_render = font.render(hero_hp_text, True, BLACK)
-        orc_hp_render = font.render(orc_hp_text, True, BLACK)
-        hero_mp_render = font.render(hero_mp_text, True, BLACK)
-        orc_mp_render = font.render(orc_mp_text, True, BLACK)
+        hero_hp_text = "HP: {}/{}".format(h.get_health(), h.get_max_health())
+        orc_hp_text = "HP: {}/{}".format(o.get_health(), o.get_max_health())
+        hero_mp_text = "MP: {}/{}".format(h.get_mana(), h.get_max_mana())
+        orc_mp_text = "MP: {}/{}".format(o.get_mana(), o.get_max_mana())
+        hero_hp_render = (font if len(hero_hp_text) < 25 else small_font).render(hero_hp_text, True, BLACK)
+        orc_hp_render = (font if len(orc_hp_text) < 25 else small_font).render(orc_hp_text, True, BLACK)
+        hero_mp_render = (font if len(hero_mp_text) < 25 else small_font).render(hero_mp_text, True, BLACK)
+        orc_mp_render = (font if len(orc_mp_text) < 25 else small_font).render(orc_mp_text, True, BLACK)
         hero_hp_rect = pygame.Rect(25, 420, hero_hp_render.get_width(), hero_hp_render.get_height())
-        orc_hp_rect = pygame.Rect(265, 65, orc_hp_render.get_width(), orc_hp_render.get_height())
+        orc_hp_rect = pygame.Rect(225, 65, orc_hp_render.get_width(), orc_hp_render.get_height())
         hero_mp_rect = pygame.Rect(25, 460, hero_mp_render.get_width(), hero_mp_render.get_height())
-        orc_mp_rect = pygame.Rect(265, 105, orc_mp_render.get_width(), orc_mp_render.get_height())
+        orc_mp_rect = pygame.Rect(225, 105, orc_mp_render.get_width(), orc_mp_render.get_height())
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -371,16 +372,20 @@ def begin_fight(o: Orc):
                             reset_frame()
                             WIN.blit(char, (250, 300))
                             WIN.blit(char, (500, 100))
-                            WIN.blit(orc_level_render, (265, 25))
+                            WIN.blit(orc_level_render, (225, 25))
                             WIN.blit(hero_level_render, (25, 380))
-                            hero_hp_text = "HP: {}".format(h.get_health())
-                            orc_hp_text = "HP: {}".format(o.get_health())
-                            hero_mp_text = "MP: {}".format(h.get_mana())
-                            orc_mp_text = "MP: {}".format(o.get_mana())
-                            hero_hp_render = font.render(hero_hp_text, True, BLACK)
-                            orc_hp_render = font.render(orc_hp_text, True, BLACK)
-                            hero_mp_render = font.render(hero_mp_text, True, BLACK)
-                            orc_mp_render = font.render(orc_mp_text, True, BLACK)
+                            hero_hp_text = "HP: {}/{}".format(h.get_health(), h.get_max_health())
+                            orc_hp_text = "HP: {}/{}".format(o.get_health(), o.get_max_health())
+                            hero_mp_text = "MP: {}/{}".format(h.get_mana(), h.get_max_mana())
+                            orc_mp_text = "MP: {}/{}".format(o.get_mana(), o.get_max_mana())
+                            hero_hp_render = (font if len(hero_hp_text) < 25 else small_font).render(hero_hp_text, True,
+                                                                                                     BLACK)
+                            orc_hp_render = (font if len(orc_hp_text) < 25 else small_font).render(orc_hp_text, True,
+                                                                                                   BLACK)
+                            hero_mp_render = (font if len(hero_mp_text) < 25 else small_font).render(hero_mp_text, True,
+                                                                                                     BLACK)
+                            orc_mp_render = (font if len(orc_mp_text) < 25 else small_font).render(orc_mp_text, True,
+                                                                                                   BLACK)
                             WIN.fill(WHITE, hero_hp_rect)
                             WIN.fill(WHITE, orc_hp_rect)
                             WIN.fill(WHITE, hero_mp_rect)
@@ -393,9 +398,9 @@ def begin_fight(o: Orc):
                             WIN.fill(WHITE, orc_hp_rect)
                             WIN.fill(WHITE, hero_mp_rect)
                             WIN.fill(WHITE, orc_mp_rect)
-                            WIN.blit(orc_hp_render, (265, 65))
+                            WIN.blit(orc_hp_render, (225, 65))
                             WIN.blit(hero_hp_render, (25, 420))
-                            WIN.blit(orc_mp_render, (265, 105))
+                            WIN.blit(orc_mp_render, (225, 105))
                             WIN.blit(hero_mp_render, (25, 460))
                             draw_healthbar(h.get_health(), h.get_max_health(), 20, 500, 440, 40)
                             draw_healthbar(o.get_health(), o.get_max_health(), 440, 20, 440, 40)
@@ -410,29 +415,31 @@ def begin_fight(o: Orc):
                         draw_healthbar(o.get_health(), o.get_max_health(), 440, 20, 440, 40)
                         draw_manabar(h.get_mana(), h.get_max_mana(), 20, 550, 440, 40)
                         draw_manabar(o.get_mana(), o.get_max_mana(), 440, 70, 440, 40)
-                        hero_hp_text = "HP: {}".format(h.get_health())
-                        orc_hp_text = "HP: {}".format(o.get_health())
-                        hero_mp_text = "MP: {}".format(h.get_mana())
-                        orc_mp_text = "MP: {}".format(o.get_mana())
-                        hero_hp_render = font.render(hero_hp_text, True, BLACK)
-                        orc_hp_render = font.render(orc_hp_text, True, BLACK)
-                        hero_mp_render = font.render(hero_mp_text, True, BLACK)
-                        orc_mp_render = font.render(orc_mp_text, True, BLACK)
+                        hero_hp_text = "HP: {}/{}".format(h.get_health(), h.get_max_health())
+                        orc_hp_text = "HP: {}/{}".format(o.get_health(), o.get_max_health())
+                        hero_mp_text = "MP: {}/{}".format(h.get_mana(), h.get_max_mana())
+                        orc_mp_text = "MP: {}/{}".format(o.get_mana(), o.get_max_mana())
+                        hero_hp_render = (font if len(hero_hp_text) < 25 else small_font).render(hero_hp_text, True,
+                                                                                                 BLACK)
+                        orc_hp_render = (font if len(orc_hp_text) < 25 else small_font).render(orc_hp_text, True, BLACK)
+                        hero_mp_render = (font if len(hero_mp_text) < 25 else small_font).render(hero_mp_text, True,
+                                                                                                 BLACK)
+                        orc_mp_render = (font if len(orc_mp_text) < 25 else small_font).render(orc_mp_text, True, BLACK)
                         WIN.fill(WHITE, hero_hp_rect)
                         WIN.fill(WHITE, orc_hp_rect)
                         WIN.fill(WHITE, hero_mp_rect)
                         WIN.fill(WHITE, orc_mp_rect)
                         hero_hp_rect = pygame.Rect(25, 420, hero_hp_render.get_width(), hero_hp_render.get_height())
-                        orc_hp_rect = pygame.Rect(265, 65, orc_hp_render.get_width(), orc_hp_render.get_height())
+                        orc_hp_rect = pygame.Rect(225, 65, orc_hp_render.get_width(), orc_hp_render.get_height())
                         hero_mp_rect = pygame.Rect(25, 460, hero_mp_render.get_width(), hero_mp_render.get_height())
-                        orc_mp_rect = pygame.Rect(265, 105, orc_mp_render.get_width(), orc_mp_render.get_height())
+                        orc_mp_rect = pygame.Rect(225, 105, orc_mp_render.get_width(), orc_mp_render.get_height())
                         WIN.fill(WHITE, hero_hp_rect)
                         WIN.fill(WHITE, orc_hp_rect)
                         WIN.fill(WHITE, hero_mp_rect)
                         WIN.fill(WHITE, orc_mp_rect)
-                        WIN.blit(orc_hp_render, (265, 65))
+                        WIN.blit(orc_hp_render, (225, 65))
                         WIN.blit(hero_hp_render, (25, 420))
-                        WIN.blit(orc_mp_render, (265, 105))
+                        WIN.blit(orc_mp_render, (225, 105))
                         WIN.blit(hero_mp_render, (25, 460))
                         print_fight_lines(fight_lines)
                         if not o.is_alive() or not h.is_alive():
@@ -443,14 +450,16 @@ def begin_fight(o: Orc):
                         draw_healthbar(o.get_health(), o.get_max_health(), 440, 20, 440, 40)
                         draw_manabar(h.get_mana(), h.get_max_mana(), 20, 550, 440, 40)
                         draw_manabar(o.get_mana(), o.get_max_mana(), 440, 70, 440, 40)
-                        hero_hp_text = "HP: {}".format(h.get_health())
-                        orc_hp_text = "HP: {}".format(o.get_health())
-                        hero_mp_text = "MP: {}".format(h.get_mana())
-                        orc_mp_text = "MP: {}".format(o.get_mana())
-                        hero_hp_render = font.render(hero_hp_text, True, BLACK)
-                        orc_hp_render = font.render(orc_hp_text, True, BLACK)
-                        hero_mp_render = font.render(hero_mp_text, True, BLACK)
-                        orc_mp_render = font.render(orc_mp_text, True, BLACK)
+                        hero_hp_text = "HP: {}/{}".format(h.get_health(), h.get_max_health())
+                        orc_hp_text = "HP: {}/{}".format(o.get_health(), o.get_max_health())
+                        hero_mp_text = "MP: {}/{}".format(h.get_mana(), h.get_max_mana())
+                        orc_mp_text = "MP: {}/{}".format(o.get_mana(), o.get_max_mana())
+                        hero_hp_render = (font if len(hero_hp_text) < 25 else small_font).render(hero_hp_text, True,
+                                                                                                 BLACK)
+                        orc_hp_render = (font if len(orc_hp_text) < 25 else small_font).render(orc_hp_text, True, BLACK)
+                        hero_mp_render = (font if len(hero_mp_text) < 25 else small_font).render(hero_mp_text, True,
+                                                                                                 BLACK)
+                        orc_mp_render = (font if len(orc_mp_text) < 25 else small_font).render(orc_mp_text, True, BLACK)
                         WIN.fill(WHITE, hero_hp_rect)
                         WIN.fill(WHITE, orc_hp_rect)
                         WIN.fill(WHITE, hero_mp_rect)
@@ -463,9 +472,9 @@ def begin_fight(o: Orc):
                         WIN.fill(WHITE, orc_hp_rect)
                         WIN.fill(WHITE, hero_mp_rect)
                         WIN.fill(WHITE, orc_mp_rect)
-                        WIN.blit(orc_hp_render, (265, 65))
+                        WIN.blit(orc_hp_render, (225, 65))
                         WIN.blit(hero_hp_render, (25, 420))
-                        WIN.blit(orc_mp_render, (265, 105))
+                        WIN.blit(orc_mp_render, (225, 105))
                         WIN.blit(hero_mp_render, (25, 460))
                         print_fight_lines(fight_lines)
                         if not o.is_alive() or not h.is_alive():
@@ -473,16 +482,18 @@ def begin_fight(o: Orc):
                         reset_frame()
                         WIN.blit(char, (250, 300))
                         WIN.blit(char, (500, 100))
-                        WIN.blit(orc_level_render, (265, 25))
+                        WIN.blit(orc_level_render, (225, 25))
                         WIN.blit(hero_level_render, (25, 380))
-                        hero_hp_text = "HP: {}".format(h.get_health())
-                        orc_hp_text = "HP: {}".format(o.get_health())
-                        hero_mp_text = "MP: {}".format(h.get_mana())
-                        orc_mp_text = "MP: {}".format(o.get_mana())
-                        hero_hp_render = font.render(hero_hp_text, True, BLACK)
-                        orc_hp_render = font.render(orc_hp_text, True, BLACK)
-                        hero_mp_render = font.render(hero_mp_text, True, BLACK)
-                        orc_mp_render = font.render(orc_mp_text, True, BLACK)
+                        hero_hp_text = "HP: {}/{}".format(h.get_health(), h.get_max_health())
+                        orc_hp_text = "HP: {}/{}".format(o.get_health(), o.get_max_health())
+                        hero_mp_text = "MP: {}/{}".format(h.get_mana(), h.get_max_mana())
+                        orc_mp_text = "MP: {}/{}".format(o.get_mana(), o.get_max_mana())
+                        hero_hp_render = (font if len(hero_hp_text) < 25 else small_font).render(hero_hp_text, True,
+                                                                                                 BLACK)
+                        orc_hp_render = (font if len(orc_hp_text) < 25 else small_font).render(orc_hp_text, True, BLACK)
+                        hero_mp_render = (font if len(hero_mp_text) < 25 else small_font).render(hero_mp_text, True,
+                                                                                                 BLACK)
+                        orc_mp_render = (font if len(orc_mp_text) < 25 else small_font).render(orc_mp_text, True, BLACK)
                         WIN.fill(WHITE, hero_hp_rect)
                         WIN.fill(WHITE, orc_hp_rect)
                         WIN.fill(WHITE, hero_mp_rect)
@@ -495,9 +506,9 @@ def begin_fight(o: Orc):
                         WIN.fill(WHITE, orc_hp_rect)
                         WIN.fill(WHITE, hero_mp_rect)
                         WIN.fill(WHITE, orc_mp_rect)
-                        WIN.blit(orc_hp_render, (265, 65))
+                        WIN.blit(orc_hp_render, (225, 65))
                         WIN.blit(hero_hp_render, (25, 420))
-                        WIN.blit(orc_mp_render, (265, 105))
+                        WIN.blit(orc_mp_render, (225, 105))
                         WIN.blit(hero_mp_render, (25, 460))
                         draw_healthbar(h.get_health(), h.get_max_health(), 20, 500, 440, 40)
                         draw_healthbar(o.get_health(), o.get_max_health(), 440, 20, 440, 40)
@@ -509,23 +520,23 @@ def begin_fight(o: Orc):
                         WIN.fill(WHITE, moves_inner)
         WIN.blit(char, (250, 300))
         WIN.blit(char, (500, 100))
-        WIN.blit(orc_level_render, (265, 25))
+        WIN.blit(orc_level_render, (225, 25))
         WIN.blit(hero_level_render, (25, 380))
         WIN.fill(WHITE, hero_hp_rect)
         WIN.fill(WHITE, orc_hp_rect)
         WIN.fill(WHITE, hero_mp_rect)
         WIN.fill(WHITE, orc_mp_rect)
         hero_hp_rect = pygame.Rect(25, 420, hero_hp_render.get_width(), hero_hp_render.get_height())
-        orc_hp_rect = pygame.Rect(265, 65, orc_hp_render.get_width(), orc_hp_render.get_height())
+        orc_hp_rect = pygame.Rect(225, 65, orc_hp_render.get_width(), orc_hp_render.get_height())
         hero_mp_rect = pygame.Rect(25, 460, hero_mp_render.get_width(), hero_mp_render.get_height())
-        orc_mp_rect = pygame.Rect(265, 105, orc_mp_render.get_width(), orc_mp_render.get_height())
+        orc_mp_rect = pygame.Rect(225, 105, orc_mp_render.get_width(), orc_mp_render.get_height())
         WIN.fill(WHITE, hero_hp_rect)
         WIN.fill(WHITE, orc_hp_rect)
         WIN.fill(WHITE, hero_mp_rect)
         WIN.fill(WHITE, orc_mp_rect)
-        WIN.blit(orc_hp_render, (265, 65))
+        WIN.blit(orc_hp_render, (225, 65))
         WIN.blit(hero_hp_render, (25, 420))
-        WIN.blit(orc_mp_render, (265, 105))
+        WIN.blit(orc_mp_render, (225, 105))
         WIN.blit(hero_mp_render, (25, 460))
         draw_healthbar(h.get_health(), h.get_max_health(), 20, 500, 440, 40)
         draw_healthbar(o.get_health(), o.get_max_health(), 440, 20, 440, 40)
@@ -628,10 +639,10 @@ def inventory():
             current_button_text = "Unequip" if item in h.get_equipped_items() else "Equip"
             current_button_x, current_button_y = 70 + (i - 4 if i >= 4 else i) * 205, 305 + (1 if i >= 4 else 0) * 250
             current_button_size_x, current_button_size_y = 145, 40
-            current_button_outer = draw_button(current_button_text, font, pygame.Color('green') if\
-                                                                        current_button_x < mouse_pos_x\
-                                                                        < current_button_x + current_button_size_x and\
-                                                                        current_button_y < mouse_pos_y\
+            current_button_outer = draw_button(current_button_text, font, pygame.Color('green') if
+                                                                        current_button_x < mouse_pos_x
+                                                                        < current_button_x + current_button_size_x and
+                                                                        current_button_y < mouse_pos_y
                                                                         < current_button_y + current_button_size_y
                                                else BLACK, BLACK, WHITE,
                                                current_button_x, current_button_y,
@@ -721,11 +732,11 @@ def shop():
                                                                                 'Buy: {}$'.format(int(item.get_cost()))
             current_button_x, current_button_y = 70 + (i - 4 if i >= 4 else i) * 205, 305 + (1 if i >= 4 else 0) * 250
             current_button_size_x, current_button_size_y = 145, 40
-            current_button_outer = draw_button(current_button_text, font if current_button_text.__len__() < 9 else\
-                small_font, pygame.Color('green') if \
-                current_button_x < mouse_pos_x \
-                < current_button_x + current_button_size_x and \
-                current_button_y < mouse_pos_y \
+            current_button_outer = draw_button(current_button_text, font if current_button_text.__len__() < 9 else
+                small_font, pygame.Color('green') if
+                current_button_x < mouse_pos_x
+                < current_button_x + current_button_size_x and
+                current_button_y < mouse_pos_y
                 < current_button_y + current_button_size_y
             else BLACK, BLACK, WHITE,
                                                current_button_x, current_button_y,
